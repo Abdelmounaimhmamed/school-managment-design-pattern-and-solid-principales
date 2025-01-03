@@ -15,7 +15,6 @@ public class Grade {
         this.isAbsent = isAbsent;
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public int getStudentId() { return studentId; }
     public int getModuleElementId() { return moduleElementId; }

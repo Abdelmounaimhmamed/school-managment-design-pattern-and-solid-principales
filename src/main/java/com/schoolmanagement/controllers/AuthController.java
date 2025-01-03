@@ -21,7 +21,7 @@ public class AuthController {
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        User user = authService.authenticate(username, password, role); // Pass role explicitly
+        User user = authService.authenticate(username, password, role); 
         if (user != null) {
             if ("Admin".equalsIgnoreCase(role) && user instanceof Admin) {
                 System.out.println("Admin login successful! Welcome, " + user.getUsername() + ".");

@@ -14,14 +14,14 @@ public class ProfessorController {
     public void manageGrades() {
         System.out.print("Enter Module Element ID: ");
         int moduleElementId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();  
     
         System.out.println("1. Enter Grades");
         System.out.println("2. Validate Grades");
         System.out.println("3. Export Grades");
         System.out.print("Enter your choice: ");
         int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();  
     
         switch (choice) {
             case 1 -> {
@@ -46,7 +46,7 @@ public class ProfessorController {
             System.out.println("4. Log out");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();  
 
             switch (choice) {
                 case 1 -> studentService.getAllStudents().forEach(student -> {
@@ -55,7 +55,7 @@ public class ProfessorController {
                 case 2 -> {
                     System.out.print("Enter student ID to delete: ");
                     int studentId = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
+                    scanner.nextLine();  
                     studentService.deleteStudentById(studentId);
                     System.out.println("Student deleted successfully.");
                 }

@@ -12,7 +12,6 @@ import java.util.List;
 public class GradeRepository {
     private static final String DB_URL = "jdbc:sqlite:school_management.db";
 
-    // Fetch grades for a specific module element
     public List<Grade> findGradesByModuleElementId(int moduleElementId) {
         List<Grade> grades = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
@@ -36,7 +35,6 @@ public class GradeRepository {
         return grades;
     }
 
-    // Save or update grades
     public void saveGrade(Grade grade) {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             String query = """

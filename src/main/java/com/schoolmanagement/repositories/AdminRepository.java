@@ -26,7 +26,6 @@ public class AdminRepository implements AdminRepositoryInterface {
 
                 ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
-                    // Using AdminBuilder to create an Admin instance
                     return new AdminBuilder()
                             .setId(rs.getInt("id"))
                             .setUsername(rs.getString("username"))

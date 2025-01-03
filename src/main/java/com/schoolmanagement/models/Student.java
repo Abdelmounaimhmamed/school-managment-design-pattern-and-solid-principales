@@ -15,7 +15,6 @@ public class Student implements User {
         this.email = email;
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public String getUsername() { return username; }
     public String getPassword() { return password; }

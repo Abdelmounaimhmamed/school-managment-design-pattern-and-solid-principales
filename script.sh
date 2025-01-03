@@ -1,1 +1,1 @@
-mvn clean package &&  java -jar target/school-management-1.0-SNAPSHOT.jar
+mvn clean package &&  docker run -it school:1.0 bash 

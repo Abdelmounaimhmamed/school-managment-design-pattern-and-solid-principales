@@ -15,7 +15,6 @@ public class ModuleElement {
         this.isValidated = isValidated;
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public String getName() { return name; }
     public int getModuleId() { return moduleId; }
