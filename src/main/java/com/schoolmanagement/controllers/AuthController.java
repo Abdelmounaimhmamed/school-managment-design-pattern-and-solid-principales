@@ -11,8 +11,12 @@ import com.schoolmanagement.services.AuthService;
 import java.util.Scanner;
 
 public class AuthController {
-    private final AuthService authService = new AuthService();
+    private final AuthService authService;
     private final Scanner scanner = new Scanner(System.in);
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     public User login(String role) {
         System.out.println("Login as a " + role);

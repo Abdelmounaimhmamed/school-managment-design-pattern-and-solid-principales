@@ -3,7 +3,11 @@ package com.schoolmanagement.services;
 import com.schoolmanagement.repositories.ProfessorRepository;
 
 public class ProfessorService {
-    private final ProfessorRepository professorRepository = new ProfessorRepository();
+    private final ProfessorRepository professorRepository;
+
+    public ProfessorService(ProfessorRepository professorRepository) {
+        this.professorRepository = professorRepository;
+    }
 
     public void enterGrades(int moduleElementId, int studentId, double gradeValue) {
         professorRepository.enterGrades(moduleElementId, studentId, gradeValue);

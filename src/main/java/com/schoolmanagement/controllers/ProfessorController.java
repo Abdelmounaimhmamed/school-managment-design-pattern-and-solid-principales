@@ -7,9 +7,13 @@ import com.schoolmanagement.services.StudentService;
 import java.util.Scanner;
 
 public class ProfessorController {
-    private final ProfessorService professorService = new ProfessorService();
+    private final ProfessorService professorService;
     private final StudentService studentService = ServiceFactory.createStudentService();
     private final Scanner scanner = new Scanner(System.in);
+
+    public ProfessorController(ProfessorService professorService) {
+        this.professorService = professorService;
+    }
 
     public void manageGrades() {
         System.out.print("Enter Module Element ID: ");

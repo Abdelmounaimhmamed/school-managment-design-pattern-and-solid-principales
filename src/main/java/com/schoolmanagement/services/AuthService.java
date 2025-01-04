@@ -8,9 +8,15 @@ import com.schoolmanagement.repositories.ProfessorRepository;
 import com.schoolmanagement.repositories.StudentRepository;
 
 public class AuthService {
-    private final AdminRepository adminRepository = new AdminRepository();
-    private final ProfessorRepository professorRepository = new ProfessorRepository();
-    private final StudentRepository studentRepository = new StudentRepository();
+    private final AdminRepository adminRepository;
+    private final ProfessorRepository professorRepository;
+    private final StudentRepository studentRepository;
+
+    public AuthService(AdminRepository adminRepository, ProfessorRepository professorRepository, StudentRepository studentRepository) {
+        this.adminRepository = adminRepository;
+        this.professorRepository = professorRepository;
+        this.studentRepository = studentRepository;
+    }
 
     // Authenticate a user (Admin, Professor, or Student)
     public User authenticate(String username, String password, String role) {

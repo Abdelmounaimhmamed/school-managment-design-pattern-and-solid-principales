@@ -8,6 +8,11 @@ import com.schoolmanagement.models.Admin;
 import com.schoolmanagement.models.Professor;
 import com.schoolmanagement.models.Student;
 import com.schoolmanagement.models.User;
+import com.schoolmanagement.repositories.AdminRepository;
+import com.schoolmanagement.repositories.ProfessorRepository;
+import com.schoolmanagement.repositories.StudentRepository;
+import com.schoolmanagement.services.AuthService;
+import com.schoolmanagement.services.ProfessorService;
 
 import java.util.Scanner;
 
@@ -17,9 +22,10 @@ public class Main {
         // DatabaseSchema.initializeDatabase();
         // DatabaseSeeder.seed();
 
-        AuthController authController = new AuthController();
+        AuthService authService = new AuthService(new AdminRepository(), new ProfessorRepository(), new StudentRepository());
+        AuthController authController = new AuthController(authService);
         AdminController adminController = new AdminController();
-        ProfessorController professorController = new ProfessorController();
+        ProfessorController professorController = new ProfessorController(new ProfessorService(new ProfessorRepository()));
         StudentController studentController = new StudentController();
 
         Scanner scanner = new Scanner(System.in);
