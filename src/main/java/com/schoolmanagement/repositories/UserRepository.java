@@ -10,12 +10,15 @@ import com.schoolmanagement.models.Student;
 import com.schoolmanagement.models.User;
 
 public class UserRepository {
-    private static final String DB_URL = "jdbc:sqlite:school_management.db";
+    private final Connection conn;
+
+    public UserRepository(Connection conn) {
+        this.conn = conn;
+    }
 
     public void deleteUser(int id) {
         String query = "DELETE FROM Users WHERE id = ?;";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id); 
             pstmt.executeUpdate();
             System.out.println("User deleted successfully.");
@@ -34,8 +37,7 @@ public class UserRepository {
                 FROM Students
                 WHERE username = ? AND password = ?;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, username); 
             
             pstmt.setString(2, password); 
@@ -77,8 +79,7 @@ public class UserRepository {
                 INSERT INTO Professors (code, username, password, first_name, last_name, specialty)
                 VALUES (?, ?, ?, ?, ?, ?);
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, professor.getCode());
             pstmt.setString(2, professor.getUsername());
             pstmt.setString(3, professor.getPassword());
@@ -97,8 +98,7 @@ public class UserRepository {
                 INSERT INTO Students (username, password, name, email)
                 VALUES (?, ?, ?, ?);
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, student.getUsername());
             pstmt.setString(2, student.getPassword());
             pstmt.setString(3, student.getName());

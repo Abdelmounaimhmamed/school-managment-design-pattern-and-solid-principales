@@ -13,7 +13,9 @@ import com.schoolmanagement.repositories.ProfessorRepository;
 import com.schoolmanagement.repositories.StudentRepository;
 import com.schoolmanagement.services.AuthService;
 import com.schoolmanagement.services.ProfessorService;
+import com.schoolmanagement.singleton.DatabaseConnection;
 
+import java.sql.Connection;
 import java.util.Scanner;
 
 public class Main {
@@ -21,11 +23,12 @@ public class Main {
         // Initialize database and seed data (uncomment as needed)
         // DatabaseSchema.initializeDatabase();
         // DatabaseSeeder.seed();
+        Connection conn = DatabaseConnection.getInstance();
 
-        AuthService authService = new AuthService(new AdminRepository(), new ProfessorRepository(), new StudentRepository());
+        AuthService authService = new AuthService(new AdminRepository(conn), new ProfessorRepository(conn), new StudentRepository(conn));
         AuthController authController = new AuthController(authService);
         AdminController adminController = new AdminController();
-        ProfessorController professorController = new ProfessorController(new ProfessorService(new ProfessorRepository()));
+        ProfessorController professorController = new ProfessorController(new ProfessorService(new ProfessorRepository(conn)));
         StudentController studentController = new StudentController();
 
         Scanner scanner = new Scanner(System.in);

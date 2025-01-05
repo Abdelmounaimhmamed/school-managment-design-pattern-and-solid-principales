@@ -11,22 +11,27 @@ import com.schoolmanagement.services.FiliereService;
 import com.schoolmanagement.services.ModuleElementService;
 import com.schoolmanagement.services.ModuleService;
 import com.schoolmanagement.services.StudentService;
+import com.schoolmanagement.singleton.DatabaseConnection;
+
+import java.sql.Connection;
 
 public class ServiceFactory {
+    private static Connection conn = DatabaseConnection.getInstance();
+
     public static AdminService createAdminService() {
-        return new AdminService(new AdminRepository());
+        return new AdminService(new AdminRepository(conn));
     }
     public static StudentService createStudentService() {
-        return new StudentService(new StudentRepository());
+        return new StudentService(new StudentRepository(conn));
     }
     public static ModuleService createModuleService() {
-        return new ModuleService(new ModuleRepository());
+        return new ModuleService(new ModuleRepository(conn));
     }
      public static FiliereService createFiliereService() {
-        return new FiliereService(new FiliereRepository());
+        return new FiliereService(new FiliereRepository(conn));
     }
    
      public static ModuleElementServiceProxy createModuleElementService() {
-        return new ModuleElementServiceProxy(new ModuleElementRepository());
+        return new ModuleElementServiceProxy(new ModuleElementRepository(DatabaseConnection.getInstance()));
     }
 }

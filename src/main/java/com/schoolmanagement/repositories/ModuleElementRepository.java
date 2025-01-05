@@ -11,7 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleElementRepository implements ModuleElementRepositoryInterface {
-    private static final String DB_URL = "jdbc:sqlite:school_management.db";
+    private final Connection conn;
+
+    public ModuleElementRepository(Connection conn) {
+        this.conn = conn;
+    }
 
     @Override
     public void saveModuleElement(ModuleElement moduleElement) {
@@ -19,8 +23,7 @@ public class ModuleElementRepository implements ModuleElementRepositoryInterface
                 INSERT INTO ModuleElements (name, module_id, coefficient, is_validated)
                 VALUES (?, ?, ?, ?);
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, moduleElement.getName());
             pstmt.setInt(2, moduleElement.getModuleId());
             pstmt.setDouble(3, moduleElement.getCoefficient());
@@ -38,8 +41,7 @@ public class ModuleElementRepository implements ModuleElementRepositoryInterface
                 SET name = ?, module_id = ?, coefficient = ?, is_validated = ?
                 WHERE id = ?;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, moduleElement.getName());
             pstmt.setInt(2, moduleElement.getModuleId());
             pstmt.setDouble(3, moduleElement.getCoefficient());
@@ -54,8 +56,7 @@ public class ModuleElementRepository implements ModuleElementRepositoryInterface
     @Override
     public void deleteModuleElement(int id) {
         String query = "DELETE FROM ModuleElements WHERE id = ?;";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (Exception e) {
@@ -71,8 +72,7 @@ public class ModuleElementRepository implements ModuleElementRepositoryInterface
                 WHERE module_id = ?;
                 """;
         List<ModuleElement> moduleElements = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, moduleId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {

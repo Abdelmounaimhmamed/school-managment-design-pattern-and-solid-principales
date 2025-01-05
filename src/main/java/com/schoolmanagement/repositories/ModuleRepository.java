@@ -12,7 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleRepository implements ModuleRepositoryInterface {
-    private static final String DB_URL = "jdbc:sqlite:school_management.db";
+    private final Connection conn;
+
+    public ModuleRepository(Connection conn) {
+        this.conn = conn;
+    }
 
     @Override
     public void addModule(Module module) {
@@ -20,8 +24,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
                 INSERT INTO Modules (code, name, filiere_id, semester, professor_id)
                 VALUES (?, ?, ?, ?, ?);
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, module.getCode());
             pstmt.setString(2, module.getName());
             pstmt.setInt(3, module.getFiliereId());
@@ -41,8 +44,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
                 SET code = ?, name = ?, filiere_id = ?, semester = ?, professor_id = ?
                 WHERE id = ?;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, module.getCode());
             pstmt.setString(2, module.getName());
             pstmt.setInt(3, module.getFiliereId());
@@ -59,8 +61,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
     @Override
     public void deleteModule(int moduleId) {
         String query = "DELETE FROM Modules WHERE id = ?;";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, moduleId);
             pstmt.executeUpdate();
             System.out.println("Module deleted successfully.");
@@ -72,8 +73,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
     @Override
     public Module findById(int moduleId) {
         String query = "SELECT * FROM Modules WHERE id = ?;";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, moduleId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -96,8 +96,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
     public List<Module> findAll() {
         List<Module> modules = new ArrayList<>();
         String query = "SELECT * FROM Modules;";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query);
+        try (PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 modules.add(new ModuleBuilder()

@@ -3,6 +3,7 @@ package com.schoolmanagement.repositories;
 import com.schoolmanagement.builders.AdminBuilder;
 import com.schoolmanagement.interfaces.AdminRepositoryInterface;
 import com.schoolmanagement.models.Admin;
+import com.schoolmanagement.singleton.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,29 +11,31 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class AdminRepository implements AdminRepositoryInterface {
-    private static final String DB_URL = "jdbc:sqlite:school_management.db";
+    private final Connection conn;
+
+    public AdminRepository(Connection conn) {
+        this.conn = conn;
+    }
 
     @Override
     public Admin findByUsernameAndPassword(String username, String password) {
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            String query = """
-                    SELECT id, username, password
-                    FROM Admins
-                    WHERE username = ? AND password = ?;
-                    """;
-            try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-                pstmt.setString(1, username);
-                pstmt.setString(2, password);
+        String query = """
+                SELECT id, username, password
+                FROM Admins
+                WHERE username = ? AND password = ?;
+                """;
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
 
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    return new AdminBuilder()
-                            .setId(rs.getInt("id"))
-                            .setUsername(rs.getString("username"))
-                            .setPassword(rs.getString("password"))
-                            .build();
-                }
-            }
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new AdminBuilder()
+                        .setId(rs.getInt("id"))
+                        .setUsername(rs.getString("username"))
+                        .setPassword(rs.getString("password"))
+                        .build();
+        }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -42,8 +45,7 @@ public class AdminRepository implements AdminRepositoryInterface {
     @Override
     public void addFiliere(String name) {
         String query = "INSERT INTO Filieres (name) VALUES (?);";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, name);
             pstmt.executeUpdate();
             System.out.println("Filiere added successfully.");
@@ -55,8 +57,7 @@ public class AdminRepository implements AdminRepositoryInterface {
     @Override
     public void updateFiliere(int id, String name) {
         String query = "UPDATE Filieres SET name = ? WHERE id = ?;";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, name);
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
@@ -70,16 +71,14 @@ public class AdminRepository implements AdminRepositoryInterface {
     public void deleteFiliere(int id) {
         String deleteModulesQuery = "DELETE FROM Modules WHERE filiere_id = ?;";
         String deleteFiliereQuery = "DELETE FROM Filieres WHERE id = ?;";
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            try (PreparedStatement deleteModulesStmt = conn.prepareStatement(deleteModulesQuery);
-                 PreparedStatement deleteFiliereStmt = conn.prepareStatement(deleteFiliereQuery)) {
-                deleteModulesStmt.setInt(1, id);
-                deleteModulesStmt.executeUpdate();
+        try (PreparedStatement deleteModulesStmt = conn.prepareStatement(deleteModulesQuery);
+             PreparedStatement deleteFiliereStmt = conn.prepareStatement(deleteFiliereQuery)) {
+            deleteModulesStmt.setInt(1, id);
+            deleteModulesStmt.executeUpdate();
 
-                deleteFiliereStmt.setInt(1, id);
-                deleteFiliereStmt.executeUpdate();
-                System.out.println("Filiere and associated modules deleted successfully.");
-            }
+            deleteFiliereStmt.setInt(1, id);
+            deleteFiliereStmt.executeUpdate();
+            System.out.println("Filiere and associated modules deleted successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,8 +87,7 @@ public class AdminRepository implements AdminRepositoryInterface {
     @Override
     public void viewFilieres() {
         String query = "SELECT * FROM Filieres;";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 System.out.printf("ID: %d, Name: %s%n", rs.getInt("id"), rs.getString("name"));
@@ -105,8 +103,7 @@ public class AdminRepository implements AdminRepositoryInterface {
                 INSERT INTO Professors (code, first_name, last_name, specialty, username, password, filiere_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?);
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             String code = "P" + System.currentTimeMillis();
             pstmt.setString(1, code);
             pstmt.setString(2, firstName);
@@ -129,8 +126,7 @@ public class AdminRepository implements AdminRepositoryInterface {
                 SET first_name = ?, last_name = ?, specialty = ?, username = ?, password = ?, filiere_id = ?
                 WHERE id = ?;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);
             pstmt.setString(3, specialty);
@@ -148,8 +144,7 @@ public class AdminRepository implements AdminRepositoryInterface {
     @Override
     public void deleteProfessor(int id) {
         String query = "DELETE FROM Professors WHERE id = ?;";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
             System.out.println("Professor deleted successfully.");
@@ -165,8 +160,7 @@ public class AdminRepository implements AdminRepositoryInterface {
                 FROM Professors p
                 LEFT JOIN Filieres f ON p.filiere_id = f.id;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 System.out.printf("ID: %d, First Name: %s, Last Name: %s, Specialty: %s, Filiere: %s%n",

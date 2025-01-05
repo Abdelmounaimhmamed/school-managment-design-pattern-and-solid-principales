@@ -20,5 +20,10 @@ public class ModuleElement {
     public int getModuleId() { return moduleId; }
     public double getCoefficient() { return coefficient; }
     public boolean isValidated() { return isValidated; }
+
+    public void setCoefficient(double coefficient) {
+        this.coefficient = coefficient;
+    }
+
     public void setValidated(boolean validated) { isValidated = validated; }
 }

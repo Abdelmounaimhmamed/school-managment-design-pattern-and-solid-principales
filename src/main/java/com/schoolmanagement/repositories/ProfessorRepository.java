@@ -8,15 +8,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class ProfessorRepository {
-    private static final String DB_URL = "jdbc:sqlite:school_management.db";
+    private final Connection conn;
+
+    public ProfessorRepository(Connection conn) {
+        this.conn = conn;
+    }
 
     public void enterGrades(int moduleElementId, int studentId, double gradeValue) {
         String query = """
                 INSERT OR REPLACE INTO Grades (student_id, module_element_id, grade_value, is_absent)
                 VALUES (?, ?, ?, 0);
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, studentId);
             pstmt.setInt(2, moduleElementId);
             pstmt.setDouble(3, gradeValue);
@@ -33,8 +36,7 @@ public class ProfessorRepository {
                 SET is_validated = 1
                 WHERE id = ?;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, moduleElementId);
             pstmt.executeUpdate();
             System.out.println("Grades validated successfully.");
@@ -50,8 +52,7 @@ public class ProfessorRepository {
                 JOIN Students s ON g.student_id = s.id
                 WHERE g.module_element_id = ?;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, moduleElementId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 System.out.println("Exporting Grades:");
@@ -73,8 +74,7 @@ public class ProfessorRepository {
                 FROM Professors
                 WHERE username = ? AND password = ?;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
 
@@ -101,8 +101,7 @@ public class ProfessorRepository {
                 INSERT INTO Professors (code, username, password, first_name, last_name, specialty)
                 VALUES (?, ?, ?, ?, ?, ?);
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, professor.getCode());
             pstmt.setString(2, professor.getUsername());
             pstmt.setString(3, professor.getPassword());
@@ -122,8 +121,7 @@ public class ProfessorRepository {
                 SET first_name = ?, last_name = ?, specialty = ?, username = ?, password = ?
                 WHERE id = ?;
                 """;
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);
             pstmt.setString(3, specialty);
